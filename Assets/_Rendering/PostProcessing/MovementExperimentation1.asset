@@ -915,7 +915,7 @@ MonoBehaviour:
       m_OverrideState: 1
       m_Value: 1
     castShadows:
-      m_OverrideState: 1
+      m_OverrideState: 0
       m_Value: 1
 --- !u!114 &6306840897016206705
 MonoBehaviour:

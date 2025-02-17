@@ -6,6 +6,7 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/OutdoorsScene.unity
-    guid: 8124e5870f4fd4c779e7a5f994e84ad1
+    path: Assets/_Levels/Scenes/Movement Experimentation 1.unity
+    guid: 2e964fc98d5e3b84da3c82469f90e09a
   m_configObjects: {}
+  m_UseUCBPForAssetBundles: 0
