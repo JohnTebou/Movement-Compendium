@@ -306,6 +306,7 @@ MonoBehaviour:
   - {fileID: 2265573471201276507}
   - {fileID: 5429370306902653363}
   - {fileID: 798990137129046568}
+  - {fileID: 9151098661363016965}
 --- !u!114 &798990137129046568
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -327,7 +328,7 @@ MonoBehaviour:
     m_OverrideState: 1
     m_Value: 4
   resolution:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: 0
   noiseType:
     m_OverrideState: 0
@@ -346,9 +347,9 @@ MonoBehaviour:
     m_Value: 0.05
   intensity:
     m_OverrideState: 1
-    m_Value: 1.52
+    m_Value: 3.2
   useMultiBounce:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: 0
   multiBounceInfluence:
     m_OverrideState: 0
@@ -852,7 +853,7 @@ MonoBehaviour:
       m_OverrideState: 1
       m_Value: 1
     castShadows:
-      m_OverrideState: 1
+      m_OverrideState: 0
       m_Value: 1
   layerB:
     cloudMap:
@@ -1061,3 +1062,52 @@ MonoBehaviour:
   planetCenterPosition:
     m_OverrideState: 0
     m_Value: {x: 0, y: -6378100, z: 0}
+--- !u!114 &9151098661363016965
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56b145d2b9ee1ac4f846968484e7485a, type: 3}
+  m_Name: ContactShadows
+  m_EditorClassIdentifier: 
+  active: 1
+  quality:
+    m_OverrideState: 1
+    m_Value: 2
+  enable:
+    m_OverrideState: 1
+    m_Value: 1
+  length:
+    m_OverrideState: 0
+    m_Value: 0.15
+  opacity:
+    m_OverrideState: 0
+    m_Value: 1
+  distanceScaleFactor:
+    m_OverrideState: 0
+    m_Value: 0.5
+  maxDistance:
+    m_OverrideState: 0
+    m_Value: 50
+  minDistance:
+    m_OverrideState: 0
+    m_Value: 0
+  fadeDistance:
+    m_OverrideState: 0
+    m_Value: 5
+  fadeInDistance:
+    m_OverrideState: 0
+    m_Value: 0
+  rayBias:
+    m_OverrideState: 0
+    m_Value: 0.2
+  thicknessScale:
+    m_OverrideState: 0
+    m_Value: 0.15
+  m_SampleCount:
+    m_OverrideState: 1
+    m_Value: 16

@@ -1,4 +1,5 @@
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,8 +9,9 @@ public class JumpTest : MonoBehaviour
     [SerializeField] private TMP_InputField jumpText;
     [SerializeField] private TMP_InputField gravityText;
 
-    private float jumpForce;
-    private float gravityAcceleration;
+    [Header("Default Values")]
+    [SerializeField] private float jumpForce;
+    [SerializeField] private float gravitationalAccelerationMagnitude;
 
     private Rigidbody rb;
     private bool jump;
@@ -18,6 +20,11 @@ public class JumpTest : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         jump = false;
+
+        jumpText.text = jumpForce.ToString();
+        gravityText.text = gravitationalAccelerationMagnitude.ToString();
+        Physics.gravity = new Vector3(0, -gravitationalAccelerationMagnitude, 0);
+
     }
 
     // Update is called once per frame
@@ -32,7 +39,7 @@ public class JumpTest : MonoBehaviour
             Debug.LogError("Invalid input! Please enter a number. You entered: " + jumpText.text);
         }
 
-        if (float.TryParse(gravityText.text.Trim(), out gravityAcceleration))
+        if (float.TryParse(gravityText.text.Trim(), out gravitationalAccelerationMagnitude))
         {
             Debug.Log("Gravitational Acceleration: " + gravityText.text);
         }
@@ -45,7 +52,7 @@ public class JumpTest : MonoBehaviour
         {
             jump = true;
         }
-        Physics.gravity = new Vector3(0, -gravityAcceleration, 0);
+        Physics.gravity = new Vector3(0, -gravitationalAccelerationMagnitude, 0);
     }
 
     private void FixedUpdate()
