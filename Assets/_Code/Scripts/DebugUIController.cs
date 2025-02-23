@@ -10,8 +10,11 @@ namespace _Code.Scripts
         [SerializeField] private Rigidbody playerRigidbody;
         
         [Header("Static Text Fields")]
+        [SerializeField] private TextMeshProUGUI jumpsRemainingText;
+        [SerializeField] private TextMeshProUGUI nextJumpForceText;
+        private string nextJumpForce;
         [SerializeField] private TextMeshProUGUI speedText;
-        
+
         [Header("Input Fields")]
         [SerializeField] private TMP_InputField _gravityInputField;
         [SerializeField] private TMP_InputField _jumpInputField;
@@ -51,6 +54,10 @@ namespace _Code.Scripts
         private void Update()
         {
             speedText.text = $"Flat Speed: {Math.Round(new Vector2(playerRigidbody.linearVelocity.z,playerRigidbody.linearVelocity.x).magnitude,3)}";
+            jumpsRemainingText.text = $"Jumps Remaining: {movementScript._jumpsRemaining}";
+            
+            nextJumpForce = movementScript._jumpsRemaining > 0 ? movementScript._jumps[Math.Min(movementScript.jumpCount-movementScript._jumpsRemaining, movementScript._jumps.Count-1)].ToString() : "No Jumps Remaining";
+            nextJumpForceText.text = $"Next Jump Force: {nextJumpForce}";
         }
 
         private void OnGravityInputChanged(string gravityInput)

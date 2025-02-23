@@ -1,10 +1,20 @@
 using System;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using Unity.VisualScripting;
 using UnityEngine;
 
 public class MovementExperimentation : MonoBehaviour
 {
+    public enum MovementState
+    {
+        walking,
+        running,
+        air
+    }
+
+    public MovementState state;
+    
     [Header("Movement Parameters")]
     [SerializeField] private float walkSpeed = 5f;
     [SerializeField] private float sprintMultiplier = 5f;
@@ -31,8 +41,8 @@ public class MovementExperimentation : MonoBehaviour
     public float initialJumpForce = 5f;
     public float jumpDampeningFactor = 0.6f;
     public int jumpCount = 5;
-    private int _jumpsRemaining;
-    private List<float> _jumps = new();
+    public int _jumpsRemaining;
+    public List<float> _jumps = new();
     private bool jump;
     
     [Space(5)]
@@ -71,7 +81,7 @@ public class MovementExperimentation : MonoBehaviour
     private void Update()
     {
         Debug.Log($"{_grounded}, Jumps Remaining: {_jumpsRemaining}, Max Jumps: {jumpCount}, Current Jump Force: {_jumps[Math.Min(jumpCount-_jumpsRemaining, _jumps.Count-1)]}");
-        SpeedDetermination();
+        StateHandler();
         GroundCheck();
         HandleDrag();
 
@@ -85,11 +95,6 @@ public class MovementExperimentation : MonoBehaviour
     {
         MovePlayer();
         Jump();
-    }
-
-    void SpeedDetermination()
-    {
-        speed = _playerInputHandler.SprintValue == 0f ? walkSpeed : walkSpeed * sprintMultiplier;
     }
 
     void GroundCheck()
@@ -106,6 +111,24 @@ public class MovementExperimentation : MonoBehaviour
         else
         {
             _playerRigidbody.linearDamping = airDrag;
+        }
+    }
+
+    private void StateHandler()
+    {
+        if (_grounded && _playerInputHandler.SprintValue == 0)
+        {
+            state = MovementState.walking;
+            speed = walkSpeed;
+        }
+        else if (_grounded && _playerInputHandler.SprintValue != 0)
+        {
+            state = MovementState.running;
+            speed = walkSpeed * sprintMultiplier;
+        }
+        else
+        {
+            state = MovementState.air;
         }
     }
 
