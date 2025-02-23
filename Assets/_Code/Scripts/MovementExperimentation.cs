@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class MovementExperimentation : MonoBehaviour
@@ -8,28 +9,38 @@ public class MovementExperimentation : MonoBehaviour
     [SerializeField] private float walkSpeed = 5f;
     [SerializeField] private float sprintMultiplier = 5f;
     private float speed;
+    [SerializeField] private float speedCap = 200f;
+    
+    [Space(5)]
     [SerializeField] private float groundDrag = 7f;
+    [SerializeField] private float airDrag = 0f;
     private Vector2 moveInput;
     
     [Header("Rotation Parameters")]
     [SerializeField] private float mouseSensitivity = 100f;
     [SerializeField] private float upDownRotationRange = 90f;
+    private float pitch;
+    private float yaw;
+    
     [Space(5)]
     [SerializeField] Transform orienter;
     [SerializeField] private Transform rotator;
     [SerializeField] private Camera playerCamera;
     
     [Header("Jump Parameters")]
-    [SerializeField] private float initialJumpForce = 5f;
+    public float initialJumpForce = 5f;
     [SerializeField] private float jumpDampeningFactor = 0.6f;
     [SerializeField] private int jumpCount = 5;
     private int _jumpsRemaining;
     private List<float> _jumps = new();
+    private bool jump;
+    
     [Space(5)]
     [SerializeField] private float gravity = 350f;
     
     [Header("Ground Check")]
-    [SerializeField] private float playerHeight;
+    [SerializeField] private CapsuleCollider playerCollider;
+    [SerializeField] private float playerHeightError;
     [SerializeField] private LayerMask groundLayer;
     private bool _grounded;
     
@@ -49,25 +60,31 @@ public class MovementExperimentation : MonoBehaviour
             _jumps.Add(initialJumpForce * (float)Math.Pow(jumpDampeningFactor, i));
         }
         _jumpsRemaining = jumpCount;
+        jump = false;
+        
+        Physics.gravity = new Vector3(0f, -gravity, 0f);
+        
+        // Cursor.lockState = CursorLockMode.Locked;
+        // Cursor.visible = false;
     }
 
     private void Update()
     {
+        Debug.Log($"{_grounded}, Jumps Remaining: {_jumpsRemaining}, Max Jumps: {jumpCount}, Current Jump Force: {_jumps[Math.Min(jumpCount-_jumpsRemaining, _jumps.Count-1)]}");
         SpeedDetermination();
         GroundCheck();
         HandleDrag();
 
         MoveInput();
+        SpeedControl();
         PlayerLook();
-        
-        Debug.Log(@$"Speed: {speed}, Move Input: {_playerInputHandler.MoveInput}, 
-                    Look Input: {_playerInputHandler.LookInput}, Sprint Input: {_playerInputHandler.SprintValue}");
+        JumpInput();
     }
 
     private void FixedUpdate()
     {
         MovePlayer();
-        // Jump();
+        Jump();
     }
 
     void SpeedDetermination()
@@ -77,7 +94,7 @@ public class MovementExperimentation : MonoBehaviour
 
     void GroundCheck()
     {
-        _grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight, groundLayer);
+        _grounded = Physics.Raycast(transform.position, Vector3.down, playerCollider.height/2 + playerHeightError, groundLayer);
     }
 
     void HandleDrag()
@@ -88,7 +105,7 @@ public class MovementExperimentation : MonoBehaviour
         }
         else
         {
-            _playerRigidbody.linearDamping = 0f;
+            _playerRigidbody.linearDamping = airDrag;
         }
     }
 
@@ -103,25 +120,60 @@ public class MovementExperimentation : MonoBehaviour
         
         _playerRigidbody.AddForce(_moveDirection.normalized * (speed), ForceMode.Force);
     }
+
+    void SpeedControl()
+    {
+        Vector3 flatvel = new Vector3(_playerRigidbody.linearVelocity.x, 0, _playerRigidbody.linearVelocity.z);
+
+        if (flatvel.magnitude > speedCap)
+        {
+            Vector3 limitedVelocity = flatvel.normalized * speedCap;
+            _playerRigidbody.linearVelocity = new Vector3(limitedVelocity.x, _playerRigidbody.linearVelocity.y, limitedVelocity.z);
+        }
+    }
+    
     void PlayerLook()
     {
         // separate channels to enable sensitivity splitting into x and y values
         Vector2 mouseInput = new Vector2(_playerInputHandler.LookInput.x ,
             _playerInputHandler.LookInput.y) * (mouseSensitivity * Time.deltaTime);
+
+        pitch -= mouseInput.y;
+        pitch = Mathf.Clamp(pitch, -upDownRotationRange, upDownRotationRange);
         
+        yaw += mouseInput.x;
         
+        orienter.localRotation = Quaternion.Euler(orienter.rotation.x, yaw, orienter.rotation.z);
+        rotator.localRotation = Quaternion.Euler(pitch, rotator.rotation.y, rotator.rotation.z);
     }
 
     void JumpInput()
     {
+        if (_playerInputHandler.JumpTriggered && _jumpsRemaining > 0)
+        {
+            jump = true;
+            _playerInputHandler.JumpTriggered = false;
+        }
+
+        if (_grounded)
+        {
+            _jumpsRemaining = jumpCount;
+        }
         
+        _jumpsRemaining = Mathf.Clamp(_jumpsRemaining, 0, jumpCount);
     }
+    
     void Jump()
     {
-        _playerRigidbody.AddForce(Vector3.up * (_jumps[jumpCount - _jumpsRemaining]), ForceMode.Impulse);
+        if (jump)
+        {
+            jump = false;
+            _playerRigidbody.AddForce(Vector3.up * (_jumps[Math.Min(jumpCount - _jumpsRemaining, _jumps.Count-1)]), ForceMode.Impulse);
+            _jumpsRemaining--;
+        }
     }
 
-    void UpdateJumps()
+    public void UpdateJumps()
     {
         for (int i = 0; i < jumpCount; i++)
         {
