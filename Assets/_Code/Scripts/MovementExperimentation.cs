@@ -29,8 +29,8 @@ public class MovementExperimentation : MonoBehaviour
     
     [Header("Jump Parameters")]
     public float initialJumpForce = 5f;
-    [SerializeField] private float jumpDampeningFactor = 0.6f;
-    [SerializeField] private int jumpCount = 5;
+    public float jumpDampeningFactor = 0.6f;
+    public int jumpCount = 5;
     private int _jumpsRemaining;
     private List<float> _jumps = new();
     private bool jump;
@@ -175,9 +175,11 @@ public class MovementExperimentation : MonoBehaviour
 
     public void UpdateJumps()
     {
+        _jumpsRemaining = jumpCount;
+        _jumps = new List<float>(jumpCount);
         for (int i = 0; i < jumpCount; i++)
         {
-            _jumps[i] = initialJumpForce * (float)Math.Pow(jumpDampeningFactor, i);
+            _jumps.Add(initialJumpForce * (float)Math.Pow(jumpDampeningFactor, i));
         }
     }
 }
