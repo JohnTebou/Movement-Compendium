@@ -9,11 +9,11 @@ public class MovementExperimentation : MonoBehaviour
     [SerializeField] private float walkSpeed = 5f;
     [SerializeField] private float sprintMultiplier = 5f;
     private float speed;
-    [SerializeField] private float speedCap = 200f;
     
     [Space(5)]
     [SerializeField] private float groundDrag = 7f;
     [SerializeField] private float airDrag = 0f;
+    [SerializeField] private float airControlMultiplier = .6f;
     private Vector2 moveInput;
     
     [Header("Rotation Parameters")]
@@ -118,16 +118,16 @@ public class MovementExperimentation : MonoBehaviour
     {
         _moveDirection = orienter.forward * moveInput.y + orienter.right * moveInput.x;
         
-        _playerRigidbody.AddForce(_moveDirection.normalized * (speed), ForceMode.Force);
+        _playerRigidbody.AddForce(_moveDirection.normalized * (speed * 10f * (_grounded ? 1 : airControlMultiplier)), ForceMode.Force);
     }
 
     void SpeedControl()
     {
         Vector3 flatvel = new Vector3(_playerRigidbody.linearVelocity.x, 0, _playerRigidbody.linearVelocity.z);
 
-        if (flatvel.magnitude > speedCap)
+        if (flatvel.magnitude > speed)
         {
-            Vector3 limitedVelocity = flatvel.normalized * speedCap;
+            Vector3 limitedVelocity = flatvel.normalized * speed;
             _playerRigidbody.linearVelocity = new Vector3(limitedVelocity.x, _playerRigidbody.linearVelocity.y, limitedVelocity.z);
         }
     }
@@ -168,6 +168,7 @@ public class MovementExperimentation : MonoBehaviour
         if (jump)
         {
             jump = false;
+            _playerRigidbody.linearVelocity = new Vector3(_playerRigidbody.linearVelocity.x, 0, _playerRigidbody.linearVelocity.z);
             _playerRigidbody.AddForce(Vector3.up * (_jumps[Math.Min(jumpCount - _jumpsRemaining, _jumps.Count-1)]), ForceMode.Impulse);
             _jumpsRemaining--;
         }
