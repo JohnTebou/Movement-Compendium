@@ -6,6 +6,12 @@ public class GraphicsToggle : MonoBehaviour
 {
     [SerializeField] private List<GameObject> graphics;
     private bool _toggler;
+    
+    [Header("Sun/Sky Settings")]
+    [SerializeField] private List<GameObject> suns;
+    [SerializeField] private List<float> exposures;
+    private int sunIndex = 0;
+    private GameObject activeSun;
 
     private void Start()
     {
@@ -14,14 +20,47 @@ public class GraphicsToggle : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.G))
-        {
-            _toggler = !_toggler;
-        }
+        GraphicsTogglingFunctionality();
+        SunSelector();
+    }
+
+    //toggle high fidelity graphics on and off (to test different performance scenarios)
+    private void GraphicsTogglingFunctionality()
+    {
+            if (Input.GetKeyDown(KeyCode.G))
+            {
+                _toggler = !_toggler;
+            }
         
-        foreach (GameObject graphic in graphics)
+            foreach (GameObject graphic in graphics)
+            {
+                graphic.SetActive(_toggler);
+            }
+    }
+
+    
+    //iterates through list of suns and only allows the indexed sun to remain active
+    private void SunSelector()
+    {
+        activeSun = suns[sunIndex];
+
+        if (Input.GetKeyDown(KeyCode.Mouse3))
         {
-            graphic.SetActive(_toggler);
+            sunIndex++;
+        }
+
+        sunIndex = sunIndex % suns.Count;
+
+        for (int i = 0; i < suns.Count; i++)
+        {
+            if (i == sunIndex)
+            {
+                suns[i].SetActive(true && _toggler);
+            }
+            else
+            {
+                suns[i].SetActive(false && _toggler);
+            }
         }
     }
 }
