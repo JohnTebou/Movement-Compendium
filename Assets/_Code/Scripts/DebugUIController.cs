@@ -95,7 +95,7 @@ namespace _Code.Scripts
         
         private void OnWalkSpeedInputChanged(string walkSpeedInput)
         {
-            if (float.TryParse(this.walkSpeedInputField.text, out float walkSpeed))
+            if (float.TryParse(walkSpeedInputField.text, out float walkSpeed))
             {
                 movementScript.walkSpeed = walkSpeed;
             }
@@ -103,7 +103,7 @@ namespace _Code.Scripts
         
         private void OnSprintMultiplierInputChanged(string sprintMultiplierInput)
         {
-            if (float.TryParse(this.walkSpeedInputField.text, out float sprintMultiplier))
+            if (float.TryParse(sprintMultiplierInputField.text, out float sprintMultiplier))
             {
                 movementScript.sprintMultiplier = sprintMultiplier;
             }
