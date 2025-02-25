@@ -8,9 +8,9 @@ public class MovementExperimentation : MonoBehaviour
 {
     public enum MovementState
     {
-        walking,
-        running,
-        air
+        Walking,
+        Running,
+        Airborne
     }
 
     public MovementState state;
@@ -21,9 +21,9 @@ public class MovementExperimentation : MonoBehaviour
     private float speed;
     
     [Space(5)]
-    [SerializeField] private float groundDrag = 7f;
-    [SerializeField] private float airDrag = 0f;
-    [SerializeField] private float airControlMultiplier = .6f;
+    public float groundDrag = 7f;
+    public float airDrag = 0f;
+    public float airControlMultiplier = .6f;
     private Vector2 moveInput;
     
     [Header("Rotation Parameters")]
@@ -70,7 +70,6 @@ public class MovementExperimentation : MonoBehaviour
             _jumps.Add(initialJumpForce * (float)Math.Pow(jumpDampeningFactor, i));
         }
         _jumpsRemaining = jumpCount;
-        jump = false;
         
         Physics.gravity = new Vector3(0f, -gravity, 0f);
         
@@ -80,7 +79,6 @@ public class MovementExperimentation : MonoBehaviour
 
     private void Update()
     {
-        Debug.Log($"{_grounded}, Jumps Remaining: {_jumpsRemaining}, Max Jumps: {jumpCount}, Current Jump Force: {_jumps[Math.Min(jumpCount-_jumpsRemaining, _jumps.Count-1)]}");
         StateHandler();
         GroundCheck();
         HandleDrag();
@@ -118,17 +116,17 @@ public class MovementExperimentation : MonoBehaviour
     {
         if (_grounded && _playerInputHandler.SprintValue == 0)
         {
-            state = MovementState.walking;
+            state = MovementState.Walking;
             speed = walkSpeed;
         }
         else if (_grounded && _playerInputHandler.SprintValue != 0)
         {
-            state = MovementState.running;
+            state = MovementState.Running;
             speed = walkSpeed * sprintMultiplier;
         }
         else
         {
-            state = MovementState.air;
+            state = MovementState.Airborne;
         }
     }
 

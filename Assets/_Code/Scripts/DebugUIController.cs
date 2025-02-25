@@ -16,10 +16,15 @@ namespace _Code.Scripts
         [SerializeField] private TextMeshProUGUI speedText;
 
         [Header("Input Fields")]
-        [SerializeField] private TMP_InputField _gravityInputField;
-        [SerializeField] private TMP_InputField _jumpInputField;
-        [SerializeField] private TMP_InputField _jumpCountInputField;
-        [SerializeField] private TMP_InputField _jumpDampeningFactorInputField;
+        [SerializeField] private TMP_InputField groundDragInputField;
+        [SerializeField] private TMP_InputField airDragInputField;
+        [SerializeField] private TMP_InputField gravityInputField;
+        [SerializeField] private TMP_InputField airControlInputField;
+        
+        [Space(5)]
+        [SerializeField] private TMP_InputField jumpForceInputField;
+        [SerializeField] private TMP_InputField jumpCountInputField;
+        [SerializeField] private TMP_InputField jumpDampeningFactorInputField;
         
         [Header("Controlled Values")]
         private float jumpMagnitude;
@@ -29,26 +34,38 @@ namespace _Code.Scripts
         {
             movementScript = GetComponent<MovementExperimentation>();
             
-            _gravityInputField.onValueChanged.AddListener(OnGravityInputChanged);
-            _jumpInputField.onValueChanged.AddListener(OnJumpForceInputChanged);
-            _jumpCountInputField.onValueChanged.AddListener(OnJumpCountInputChanged);
-            _jumpDampeningFactorInputField.onValueChanged.AddListener(OnJumpDampeningFactorInputChanged);
+            groundDragInputField.onValueChanged.AddListener(OnGroundDragInputChanged);
+            airDragInputField.onValueChanged.AddListener(OnAirDragInputChanged);
+            gravityInputField.onValueChanged.AddListener(OnGravityInputChanged);
+            airControlInputField.onValueChanged.AddListener(OnAirControlInputChanged);
+            
+            jumpForceInputField.onValueChanged.AddListener(OnJumpForceInputChanged);
+            jumpCountInputField.onValueChanged.AddListener(OnJumpCountInputChanged);
+            jumpDampeningFactorInputField.onValueChanged.AddListener(OnJumpDampeningFactorInputChanged);
         }
         
         private void OnDestroy()
         {
-            _gravityInputField.onValueChanged.RemoveListener(OnGravityInputChanged);
-            _jumpInputField.onValueChanged.RemoveListener(OnJumpForceInputChanged);
-            _jumpCountInputField.onValueChanged.RemoveListener(OnJumpCountInputChanged);
-            _jumpDampeningFactorInputField.onValueChanged.RemoveListener(OnJumpDampeningFactorInputChanged);
+            groundDragInputField.onValueChanged.RemoveListener(OnGroundDragInputChanged);
+            airDragInputField.onValueChanged.RemoveListener(OnAirDragInputChanged);
+            gravityInputField.onValueChanged.RemoveListener(OnGravityInputChanged);
+            airControlInputField.onValueChanged.RemoveListener(OnAirControlInputChanged);
+            
+            jumpForceInputField.onValueChanged.RemoveListener(OnJumpForceInputChanged);
+            jumpCountInputField.onValueChanged.RemoveListener(OnJumpCountInputChanged);
+            jumpDampeningFactorInputField.onValueChanged.RemoveListener(OnJumpDampeningFactorInputChanged);
         }
 
         private void Start()
         {
-            _gravityInputField.text = Physics.gravity.magnitude.ToString();
-            _jumpInputField.text = movementScript.initialJumpForce.ToString();
-            _jumpCountInputField.text = movementScript.jumpCount.ToString();
-            _jumpDampeningFactorInputField.text= movementScript.jumpDampeningFactor.ToString();
+            groundDragInputField.text = movementScript.groundDrag.ToString();
+            airDragInputField.text = movementScript.airDrag.ToString();
+            gravityInputField.text = Physics.gravity.magnitude.ToString();
+            airControlInputField.text = movementScript.airControlMultiplier.ToString();
+            
+            jumpForceInputField.text = movementScript.initialJumpForce.ToString();
+            jumpCountInputField.text = movementScript.jumpCount.ToString();
+            jumpDampeningFactorInputField.text= movementScript.jumpDampeningFactor.ToString();
         }
 
         private void Update()
@@ -59,18 +76,42 @@ namespace _Code.Scripts
             nextJumpForce = movementScript._jumpsRemaining > 0 ? movementScript._jumps[Math.Min(movementScript.jumpCount-movementScript._jumpsRemaining, movementScript._jumps.Count-1)].ToString() : "No Jumps Remaining";
             nextJumpForceText.text = $"Next Jump Force: {nextJumpForce}";
         }
+        
+        private void OnGroundDragInputChanged(string groundDragInput)
+        {
+            if (float.TryParse(groundDragInputField.text, out float groundDrag))
+            {
+                movementScript.groundDrag = groundDrag;
+            }
+        }
+        
+        private void OnAirDragInputChanged(string airDragInput)
+        {
+            if (float.TryParse(airDragInputField.text, out float airDrag))
+            {
+                movementScript.airDrag = airDrag;
+            }
+        }
+        
+        private void OnAirControlInputChanged(string airControlInput)
+        {
+            if (float.TryParse(airControlInputField.text, out float airControl))
+            {
+                movementScript.airControlMultiplier = airControl;
+            }
+        }
 
         private void OnGravityInputChanged(string gravityInput)
         {
-            if (float.TryParse(_gravityInputField.text, out float gravity))
+            if (float.TryParse(gravityInputField.text, out float gravity))
             {
                 Physics.gravity = new Vector3(0f, -gravity, 0f);
             }
         }
-
+        
         private void OnJumpForceInputChanged(string jumpInput)
         {
-            if (float.TryParse(_jumpInputField.text, out float jump))
+            if (float.TryParse(jumpForceInputField.text, out float jump))
             {
                 movementScript.initialJumpForce = jump;
                 movementScript.UpdateJumps();
@@ -79,7 +120,7 @@ namespace _Code.Scripts
         
         private void OnJumpCountInputChanged(string jumpCountInput)
         {
-            if (int.TryParse(_jumpCountInputField.text, out int jumpCount))
+            if (int.TryParse(jumpCountInputField.text, out int jumpCount))
             {
                 movementScript.jumpCount = jumpCount;
                 movementScript.UpdateJumps();
@@ -88,7 +129,7 @@ namespace _Code.Scripts
         
         private void OnJumpDampeningFactorInputChanged(string jumpDampeningFactorInput)
         {
-            if (float.TryParse(_jumpDampeningFactorInputField.text, out float jumpDampeningFactor))
+            if (float.TryParse(jumpDampeningFactorInputField.text, out float jumpDampeningFactor))
             {
                 movementScript.jumpDampeningFactor = jumpDampeningFactor;
                 movementScript.UpdateJumps();
