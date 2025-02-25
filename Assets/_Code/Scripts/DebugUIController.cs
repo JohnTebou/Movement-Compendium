@@ -1,6 +1,7 @@
 ﻿using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace _Code.Scripts
 {
@@ -16,6 +17,10 @@ namespace _Code.Scripts
         [SerializeField] private TextMeshProUGUI speedText;
 
         [Header("Input Fields")]
+        [SerializeField] private TMP_InputField walkSpeedInputField;
+        [SerializeField] private TMP_InputField sprintMultiplierInputField;
+        
+        [Space(5)]
         [SerializeField] private TMP_InputField groundDragInputField;
         [SerializeField] private TMP_InputField airDragInputField;
         [SerializeField] private TMP_InputField gravityInputField;
@@ -33,6 +38,9 @@ namespace _Code.Scripts
         private void Awake()
         {
             movementScript = GetComponent<MovementExperimentation>();
+
+            walkSpeedInputField.onValueChanged.AddListener(OnWalkSpeedInputChanged);
+            sprintMultiplierInputField.onValueChanged.AddListener(OnSprintMultiplierInputChanged);
             
             groundDragInputField.onValueChanged.AddListener(OnGroundDragInputChanged);
             airDragInputField.onValueChanged.AddListener(OnAirDragInputChanged);
@@ -46,6 +54,9 @@ namespace _Code.Scripts
         
         private void OnDestroy()
         {
+            walkSpeedInputField.onValueChanged.RemoveListener(OnWalkSpeedInputChanged);
+            sprintMultiplierInputField.onValueChanged.RemoveListener(OnSprintMultiplierInputChanged);
+            
             groundDragInputField.onValueChanged.RemoveListener(OnGroundDragInputChanged);
             airDragInputField.onValueChanged.RemoveListener(OnAirDragInputChanged);
             gravityInputField.onValueChanged.RemoveListener(OnGravityInputChanged);
@@ -58,6 +69,9 @@ namespace _Code.Scripts
 
         private void Start()
         {
+            walkSpeedInputField.text = movementScript.walkSpeed.ToString();
+            sprintMultiplierInputField.text = movementScript.sprintMultiplier.ToString();
+            
             groundDragInputField.text = movementScript.groundDrag.ToString();
             airDragInputField.text = movementScript.airDrag.ToString();
             gravityInputField.text = Physics.gravity.magnitude.ToString();
@@ -75,6 +89,24 @@ namespace _Code.Scripts
             
             nextJumpForce = movementScript._jumpsRemaining > 0 ? movementScript._jumps[Math.Min(movementScript.jumpCount-movementScript._jumpsRemaining, movementScript._jumps.Count-1)].ToString() : "No Jumps Remaining";
             nextJumpForceText.text = $"Next Jump Force: {nextJumpForce}";
+        }
+        
+        
+        
+        private void OnWalkSpeedInputChanged(string walkSpeedInput)
+        {
+            if (float.TryParse(this.walkSpeedInputField.text, out float walkSpeed))
+            {
+                movementScript.walkSpeed = walkSpeed;
+            }
+        }
+        
+        private void OnSprintMultiplierInputChanged(string sprintMultiplierInput)
+        {
+            if (float.TryParse(this.walkSpeedInputField.text, out float sprintMultiplier))
+            {
+                movementScript.sprintMultiplier = sprintMultiplier;
+            }
         }
         
         private void OnGroundDragInputChanged(string groundDragInput)

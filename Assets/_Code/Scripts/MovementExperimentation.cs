@@ -16,8 +16,8 @@ public class MovementExperimentation : MonoBehaviour
     public MovementState state;
     
     [Header("Movement Parameters")]
-    [SerializeField] private float walkSpeed = 5f;
-    [SerializeField] private float sprintMultiplier = 5f;
+    public float walkSpeed = 5f;
+    public float sprintMultiplier = 5f;
     private float speed;
     
     [Space(5)]

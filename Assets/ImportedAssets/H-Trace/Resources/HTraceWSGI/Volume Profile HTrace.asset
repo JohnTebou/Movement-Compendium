@@ -25,6 +25,11 @@ MonoBehaviour:
   rayMiss:
     m_OverrideState: 1
     m_Value: 0
+  adaptiveProbeVolumesLayerMask:
+    m_OverrideState: 0
+    m_Value:
+      serializedVersion: 0
+      m_Bits: 1
   depthBufferThickness:
     m_OverrideState: 0
     m_Value: 0.1
@@ -42,7 +47,7 @@ MonoBehaviour:
     m_Value: 0
   m_DenoiserRadiusSS:
     m_OverrideState: 1
-    m_Value: 0.5
+    m_Value: 1
   m_SecondDenoiserPassSS:
     m_OverrideState: 1
     m_Value: 1
