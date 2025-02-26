@@ -366,7 +366,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2952fdaeec6da141b666c6548095f73, type: 3}
   m_Name: HBAO
   m_EditorClassIdentifier: 
-  active: 1
+  active: 0
   shader: {fileID: 4800000, guid: 3f19ebe439173b8489084afc0ecaacb5, type: 3}
   preset:
     m_OverrideState: 1
@@ -385,7 +385,7 @@ MonoBehaviour:
     m_Value: 0
   radius:
     m_OverrideState: 1
-    m_Value: 1.2
+    m_Value: 1.46
   maxRadiusPixels:
     m_OverrideState: 1
     m_Value: 256
@@ -394,7 +394,7 @@ MonoBehaviour:
     m_Value: 0.05
   intensity:
     m_OverrideState: 1
-    m_Value: 3.2
+    m_Value: 2.26
   useMultiBounce:
     m_OverrideState: 1
     m_Value: 0

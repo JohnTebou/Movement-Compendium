@@ -13,15 +13,20 @@ public class GraphicsToggle : MonoBehaviour
     private int sunIndex = 0;
     private GameObject activeSun;
 
+    private bool _cursortoggler;
+
     private void Start()
     {
         _toggler = false;
+        _cursortoggler = false;
     }
 
     private void Update()
     {
         GraphicsTogglingFunctionality();
         SunSelector();
+        
+        CursorToggle();
     }
 
     //toggle high fidelity graphics on and off (to test different performance scenarios)
@@ -61,6 +66,25 @@ public class GraphicsToggle : MonoBehaviour
             {
                 suns[i].SetActive(false && _toggler);
             }
+        }
+    }
+
+    private void CursorToggle()
+    {
+        if (Input.GetKeyDown(KeyCode.Mouse4))
+        {
+            _cursortoggler = !_cursortoggler;
+        }        
+        
+        if (_cursortoggler)
+        {
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
+        }
+        else
+        {
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
         }
     }
 }
